@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter_assignment/model/wiki_data.dart';
 import 'package:flutter_assignment/pages/details_page.dart';
+import 'package:flutter_assignment/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class HomeTestPage extends StatefulWidget {
 
 class _PagesHomeState extends State<HomeTestPage> {
   final _searchFetcher = new _Fetcher();
-  String _searchingQuery = ''; // TODO VENDOR flutter's TextEditing's onchange callback doesn't expose oldValue for now
+  String _searchingQuery = '';
   List<_EntryWithSummary> _fetchedSearchingEntries = []; // NOTE use `null` to represent loading
 
   @override
@@ -25,24 +26,24 @@ class _PagesHomeState extends State<HomeTestPage> {
       body: new CustomScrollView(
         slivers: <Widget>[
           new SliverAppBar(
-            expandedHeight: 70.0,
-            //floating: true,
-            //snap: true,
+            automaticallyImplyLeading: false,
+            expandedHeight: 60.0,
             flexibleSpace: new FlexibleSpaceBar(
               background: new Stack(
                 fit: StackFit.expand,
                 children: <Widget>[
                   new Container(
                     child: new Center(
-                      child: new Text('Wiki Flutter', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),) // _AnimatedTitleText()
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: new Text('Wiki Search', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),),
+                      ) // _AnimatedTitleText()
                     ),
                   )
                 ],
               )
             )
           ),
-
-         // SizedBox(height: 20),
 
           new SliverList(
             delegate: new SliverChildListDelegate([_searchBar()])
@@ -163,26 +164,19 @@ class _Fetcher {
 
     client = new http.Client();
 
-  //  final String url = "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&errorformat=bc&search=$str&namespace=0&limit=10&suggest=1&utf8=1&formatversion=2";
+    Map data = {'gpssearch': str};
+   // var jsonResponse = null;
+    var response = await http.post(Constants.BASE_URL, body: data);
 
-//
-    final String url = 'https://en.wikipedia.org//w/api.php?action=query&format=json&prop=pageimages%7Cpageterms&generator=prefixsearch&redirects=1&formatversion=2&piprop=thumbnail&pithumbsize=50&pilimit=10&wbptterms=description&gpslimit=10&gpssearch=$str';
-    var response = await client.get(url);
+   // var response = await client.get(url);
     if (response.statusCode == 200) {
       var jsonBody = response.body;
       var jsonMap = json.decode(jsonBody);
       print('jsonMap : $jsonMap');
-
-      print('11111111111111111111111111111111111');
-
       var list = jsonMap['query']['pages'] as List;
       print(list.runtimeType); //returns List<dynamic>
       pagesList =
           list.map((i) => Pages.fromJson(i)).toList();
-
-  //   print(pagesList[0].title);
-
-
     }
 
     client.close();

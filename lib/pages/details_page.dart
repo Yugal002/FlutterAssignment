@@ -45,17 +45,29 @@ class _DetailsPageState extends State<DetailsPage> {
              Card(
                elevation: 3,
                child: Container(
-                 width: MediaQuery.of(context).size.width,
-                 height: 200,
-                 child: widget.thumbSource != '' ? Image.network(widget.thumbSource.toString(), fit: BoxFit.cover,)
-                     : Center(child: Text('Image not available')),
+                 height: MediaQuery.of(context).size.height/1.3,
+                 child: Column(
+                   children: [
+                     Container(
+                       width: MediaQuery.of(context).size.width,
+                       height: 200,
+                       child: widget.thumbSource != '' ? Image.network(widget.thumbSource.toString(), fit: BoxFit.cover,)
+                           : Center(child: Text('Image not available')),
+                     ),
+
+                     SizedBox(height: 30,),
+                     Text(widget.textTitle,  style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 18)),
+                     SizedBox(height: 10,),
+                     Padding(
+                       padding: const EdgeInsets.all(8.0),
+                       child: Text(widget.textSummary, style: TextStyle(color: Colors.black)),
+                     ),
+                   ],
+                 ),
                ),
              ),
              
-             SizedBox(height: 30,),
-             Text(widget.textTitle,  style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold, fontSize: 18)),
-             SizedBox(height: 10,),
-             Text(widget.textSummary, style: TextStyle(color: Colors.black)),
+
 
            ],
          ),
